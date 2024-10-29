@@ -11,10 +11,12 @@ for (pkg in required_packages) {
   }
 }
 
-# Load all the required packages
+#hello
+
+# Load required libraries
 library(nflfastR)
+library(dplyr)
 library(tidyr)
-library(tidyverse)
 library(DT)
 library(ggplot2)
 library(gridExtra)
@@ -32,7 +34,7 @@ game_results <- pbp %>%
     away_team = first(away_team),
     home_score = max(total_home_score, na.rm = TRUE),
     away_score = max(total_away_score, na.rm = TRUE),
-    .groups = "drop"
+    .groups = 'drop'
   ) %>%
   mutate(
     winner = case_when(
@@ -90,25 +92,23 @@ weekly_def_epa_stats <- pbp %>%
     .groups = 'drop'
   )
 
-# Calculate means and directional variances for defensive stats
-def_team_stats <- weekly_def_epa_stats %>%
-  group_by(defteam) %>%
-  summarize(
-    avg_points_against_per_play = mean(points_against_per_play, na.rm = TRUE),
-    points_against_per_play_variance = 
-      calculate_directional_variance(points_against_per_play, 
-      mean(points_against_per_play, na.rm = TRUE)),
-    avg_epa_pass_against = mean(epa_pass_against_per_play, na.rm = TRUE),
-    epa_pass_against_variance = calculate_directional_variance(epa_pass_against_per_play, mean(epa_pass_against_per_play, na.rm = TRUE)),
-    avg_epa_run_against = mean(epa_run_against_per_play, na.rm = TRUE),
-    epa_run_against_variance = calculate_directional_variance(epa_run_against_per_play, mean(epa_run_against_per_play, na.rm = TRUE)),
-    avg_success_rate_against = mean(success_rate_against, na.rm = TRUE),
-    success_rate_against_variance = calculate_directional_variance(success_rate_against, mean(success_rate_against, na.rm = TRUE)),
-    avg_yards_against_per_play = mean(yards_against_per_play, na.rm = TRUE),
-    yards_against_per_play_variance = calculate_directional_variance(yards_against_per_play, mean(yards_against_per_play, na.rm = TRUE)),
-    .groups = 'drop'
-  ) %>%
-  rename(team = defteam)
+# Function to calculate directional variance
+calculate_directional_variance <- function(data, mean_value) {
+  variance <- var(data, na.rm = TRUE)
+  mean_diff <- mean(data - mean_value, na.rm = TRUE)
+  return(ifelse(mean_diff < 0, -variance, variance))
+}
+
+# Function to normalize variance
+normalize_variance <- function(variance, is_better_higher = FALSE) {
+  normalized = (variance - min(variance, na.rm = TRUE)) / 
+    (max(variance, na.rm = TRUE) - min(variance, na.rm = TRUE))
+  if(is_better_higher) {
+    return(normalized)
+  } else {
+    return(1 - normalized)  # Invert for metrics where lower is better
+  }
+}
 
 # Calculate combined variance score
 combined_variance_stats <- team_stats %>%
@@ -168,6 +168,9 @@ def_team_stats <- weekly_def_epa_stats %>%
   ) %>%
   rename(team = defteam)
 
+
+
+# Join all stats with team names and filter out any NA or blank rows
 final_stats <- team_stats %>%
   left_join(def_team_stats, by = "team") %>%
   left_join(combined_variance_stats, by = "team") %>%
@@ -177,19 +180,7 @@ final_stats <- team_stats %>%
       rename(team = team_abbr),
     by = "team"
   ) %>%
-  filter(!is.na(team_name), team_name != "") %>%
-  mutate(
-    adj_avg_points_per_play = avg_points_per_play + points_per_play_variance,
-    adj_avg_epa_pass = avg_epa_pass + epa_pass_variance,
-    adj_avg_epa_run = avg_epa_run + epa_run_variance, 
-    adj_avg_success_rate = avg_success_rate + success_rate_variance,
-    adj_avg_yards_per_play = avg_yards_per_play + yards_per_play_variance,
-    adj_avg_points_against_per_play = avg_points_against_per_play - points_against_per_play_variance,
-    adj_avg_epa_pass_against = avg_epa_pass_against - epa_pass_against_variance,
-    adj_avg_epa_run_against = avg_epa_run_against - epa_run_against_variance,
-    adj_avg_success_rate_against = avg_success_rate_against - success_rate_against_variance,
-    adj_avg_yards_against_per_play = avg_yards_against_per_play - yards_against_per_play_variance
-  )
+  filter(!is.na(team_name), team_name != "")
 
 create_nfl_scatterplot <- function(data, x_col_num, y_col_num, add_trendline = FALSE) {
   col_names <- colnames(data)
@@ -310,59 +301,12 @@ create_nfl_scatterplot <- function(data, x_col_num, y_col_num, add_trendline = F
 
 # Update the graph function
 graph <- function(x_col_num, y_col_num, add_trendline = FALSE) {
-  create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+  create_nfl_scatterplot(final_stats, x_col_num, y_col_num, add_trendline)
 }
 
-heat <- function(...) {
-  # Get the column numbers from the arguments
-  stat_nums <- c(...)
-  
-  # Get the selected columns
-  selected_cols <- colnames(result_table)[stat_nums]
-  
-  # Create heatmap data
-  heatmap_data <- result_table %>%
-    select(team, all_of(selected_cols)) %>%
-    pivot_longer(cols = -team, names_to = "stat", values_to = "value") %>%
-    group_by(stat) %>%
-    mutate(
-      # Calculate z-scores for each stat independently
-      scaled_value = (value - mean(value, na.rm = TRUE)) / sd(value, na.rm = TRUE)
-    ) %>%
-    ungroup()
-  
-  # Create the heatmap
-  ggplot(heatmap_data, aes(x = stat, y = team, fill = scaled_value)) +
-    geom_tile(width = 1) +  # Make tiles full width
-    scale_fill_gradient2(
-      low = "blue",
-      mid = "white",
-      high = "red",
-      midpoint = 0,
-      name = "Standard Deviations\nfrom Mean"
-    ) +
-    theme_minimal() +
-    theme(
-      # Text colors
-      axis.text.x = element_text(angle = 45, hjust = 1, color = "white"),
-      axis.text.y = element_text(color = "white"),
-      title = element_text(color = "white"),
-      legend.text = element_text(color = "white"),
-      legend.title = element_text(color = "white"),
-      
-      # Background colors
-      plot.background = element_rect(fill = "black", color = "black"),
-      panel.background = element_rect(fill = "black", color = "black"),
-      legend.background = element_rect(fill = "black"),
-      
-      # Remove grid and spacing
-      panel.grid = element_blank(),
-      panel.spacing = unit(0, "lines"),
-      
-      # Center title
-      plot.title = element_text(hjust = 0.5)
-    ) +
-    labs(title = paste("Comparison of Multiple Statistics"))
+# Display column names with indices
+for(i in seq_along(colnames(final_stats))) {
+  cat(i, ": ", colnames(final_stats)[i], "\n")
 }
 
 # Calculate adjusted stats
