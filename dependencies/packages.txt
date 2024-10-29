@@ -1,0 +1,9 @@
+nflfastR
+dplyr
+tidyr
+DT
+ggplot2
+gridExtra
+nflplotR
+plotly
+r-base
