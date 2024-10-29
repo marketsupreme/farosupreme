@@ -1,17 +1,15 @@
 # Author - eli, faro.gov
 # Contributors - marketsupreme
 
-# options(repos = c(CRAN = "https://cran.rstudio.com"))
-# required_packages <- trimws(readLines("./dependencies/packages.txt"))
+options(repos = c(CRAN = "https://cran.rstudio.com"))
+required_packages <- trimws(readLines("./dependencies/packages.txt"))
 
-# # Check each package and install if it's not already installed
-# for (pkg in required_packages) {
-#   if (!requireNamespace(pkg, quietly = TRUE)) {
-#     install.packages(pkg)
-#   }
-# }
-
-
+# Check each package and install if it's not already installed
+for (pkg in required_packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
 
 # Load all the required packages
 library(nflfastR)
@@ -97,7 +95,9 @@ def_team_stats <- weekly_def_epa_stats %>%
   group_by(defteam) %>%
   summarize(
     avg_points_against_per_play = mean(points_against_per_play, na.rm = TRUE),
-    points_against_per_play_variance = calculate_directional_variance(points_against_per_play, mean(points_against_per_play, na.rm = TRUE)),
+    points_against_per_play_variance = 
+      calculate_directional_variance(points_against_per_play, 
+      mean(points_against_per_play, na.rm = TRUE)),
     avg_epa_pass_against = mean(epa_pass_against_per_play, na.rm = TRUE),
     epa_pass_against_variance = calculate_directional_variance(epa_pass_against_per_play, mean(epa_pass_against_per_play, na.rm = TRUE)),
     avg_epa_run_against = mean(epa_run_against_per_play, na.rm = TRUE),
@@ -167,8 +167,6 @@ def_team_stats <- weekly_def_epa_stats %>%
     .groups = 'drop'
   ) %>%
   rename(team = defteam)
-
-
 
 final_stats <- team_stats %>%
   left_join(def_team_stats, by = "team") %>%
