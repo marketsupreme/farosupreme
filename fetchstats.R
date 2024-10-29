@@ -1,18 +1,27 @@
-#Author - faro.gov
-#Contributors - marketsupreme
+# Author - eli, faro.gov
+# Contributors - marketsupreme
 
-options(repos = c(CRAN = "https://cran.rstudio.com"))
-required_packages <- trimws(readLines("./dependencies/packages.txt"))
+# options(repos = c(CRAN = "https://cran.rstudio.com"))
+# required_packages <- trimws(readLines("./dependencies/packages.txt"))
 
-# Check each package and install if it's not already installed
-for (pkg in required_packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg)
-  }
-}
+# # Check each package and install if it's not already installed
+# for (pkg in required_packages) {
+#   if (!requireNamespace(pkg, quietly = TRUE)) {
+#     install.packages(pkg)
+#   }
+# }
+
+
 
 # Load all the required packages
-lapply(required_packages, library, character.only = TRUE)
+library(nflfastR)
+library(tidyr)
+library(tidyverse)
+library(DT)
+library(ggplot2)
+library(gridExtra)
+library(nflplotR)
+library(plotly)
 
 # Load play-by-play data for the current season
 pbp <- load_pbp(2024)
@@ -25,7 +34,7 @@ game_results <- pbp %>%
     away_team = first(away_team),
     home_score = max(total_home_score, na.rm = TRUE),
     away_score = max(total_away_score, na.rm = TRUE),
-    .groups = 'drop'
+    .groups = "drop"
   ) %>%
   mutate(
     winner = case_when(
@@ -83,44 +92,25 @@ weekly_def_epa_stats <- pbp %>%
     .groups = 'drop'
   )
 
-# Function to calculate directional variance
-calculate_directional_variance <- function(data, mean_value) {
-  variance <- var(data, na.rm = TRUE)
-  mean_diff <- mean(data - mean_value, na.rm = TRUE)
-  return(ifelse(mean_diff < 0, -variance, variance))
-}
-
-# Function to normalize variance
-normalize_variance <- function(variance, is_better_higher = FALSE) {
-  normalized = (variance - min(variance, na.rm = TRUE)) / 
-    (max(variance, na.rm = TRUE) - min(variance, na.rm = TRUE))
-  if(is_better_higher) {
-    return(normalized)
-  } else {
-    return(1 - normalized)  # Invert for metrics where lower is better
-  }
-}
-
-# Calculate means and directional variances for offensive stats
-team_stats <- weekly_epa_stats %>%
-  group_by(posteam) %>%
+# Calculate means and directional variances for defensive stats
+def_team_stats <- weekly_def_epa_stats %>%
+  group_by(defteam) %>%
   summarize(
-    avg_points_per_play = mean(points_per_play, na.rm = TRUE),
-    points_per_play_variance = calculate_directional_variance(points_per_play, mean(points_per_play, na.rm = TRUE)),
-    avg_epa_pass = mean(epa_pass_per_play, na.rm = TRUE),
-    epa_pass_variance = calculate_directional_variance(epa_pass_per_play, mean(epa_pass_per_play, na.rm = TRUE)),
-    avg_epa_run = mean(epa_run_per_play, na.rm = TRUE),
-    epa_run_variance = calculate_directional_variance(epa_run_per_play, mean(epa_run_per_play, na.rm = TRUE)),
-    avg_success_rate = mean(success_rate, na.rm = TRUE),
-    success_rate_variance = calculate_directional_variance(success_rate, mean(success_rate, na.rm = TRUE)),
-    avg_yards_per_play = mean(yards_per_play, na.rm = TRUE),
-    yards_per_play_variance = calculate_directional_variance(yards_per_play, mean(yards_per_play, na.rm = TRUE)),
-    win_percentage = mean(win_percentage, na.rm = TRUE),
+    avg_points_against_per_play = mean(points_against_per_play, na.rm = TRUE),
+    points_against_per_play_variance = calculate_directional_variance(points_against_per_play, mean(points_against_per_play, na.rm = TRUE)),
+    avg_epa_pass_against = mean(epa_pass_against_per_play, na.rm = TRUE),
+    epa_pass_against_variance = calculate_directional_variance(epa_pass_against_per_play, mean(epa_pass_against_per_play, na.rm = TRUE)),
+    avg_epa_run_against = mean(epa_run_against_per_play, na.rm = TRUE),
+    epa_run_against_variance = calculate_directional_variance(epa_run_against_per_play, mean(epa_run_against_per_play, na.rm = TRUE)),
+    avg_success_rate_against = mean(success_rate_against, na.rm = TRUE),
+    success_rate_against_variance = calculate_directional_variance(success_rate_against, mean(success_rate_against, na.rm = TRUE)),
+    avg_yards_against_per_play = mean(yards_against_per_play, na.rm = TRUE),
+    yards_against_per_play_variance = calculate_directional_variance(yards_against_per_play, mean(yards_against_per_play, na.rm = TRUE)),
     .groups = 'drop'
   ) %>%
-  rename(team = posteam)
+  rename(team = defteam)
 
-  # Calculate combined variance score
+# Calculate combined variance score
 combined_variance_stats <- team_stats %>%
   left_join(def_team_stats, by = "team") %>%
   mutate(
@@ -140,6 +130,25 @@ combined_variance_stats <- team_stats %>%
     ) / 10  # Divide by number of components to get average
   ) %>%
   select(team, combined_variance_score)
+
+# Calculate means and directional variances for offensive stats
+team_stats <- weekly_epa_stats %>%
+  group_by(posteam) %>%
+  summarize(
+    avg_points_per_play = mean(points_per_play, na.rm = TRUE),
+    points_per_play_variance = calculate_directional_variance(points_per_play, mean(points_per_play, na.rm = TRUE)),
+    avg_epa_pass = mean(epa_pass_per_play, na.rm = TRUE),
+    epa_pass_variance = calculate_directional_variance(epa_pass_per_play, mean(epa_pass_per_play, na.rm = TRUE)),
+    avg_epa_run = mean(epa_run_per_play, na.rm = TRUE),
+    epa_run_variance = calculate_directional_variance(epa_run_per_play, mean(epa_run_per_play, na.rm = TRUE)),
+    avg_success_rate = mean(success_rate, na.rm = TRUE),
+    success_rate_variance = calculate_directional_variance(success_rate, mean(success_rate, na.rm = TRUE)),
+    avg_yards_per_play = mean(yards_per_play, na.rm = TRUE),
+    yards_per_play_variance = calculate_directional_variance(yards_per_play, mean(yards_per_play, na.rm = TRUE)),
+    win_percentage = mean(win_percentage, na.rm = TRUE),
+    .groups = 'drop'
+  ) %>%
+  rename(team = posteam)
 
 # Calculate means and directional variances for defensive stats
 def_team_stats <- weekly_def_epa_stats %>%

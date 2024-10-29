@@ -6,4 +6,3 @@ ggplot2
 gridExtra
 nflplotR
 plotly
-r-base
