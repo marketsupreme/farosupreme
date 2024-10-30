@@ -1,18 +1,6 @@
 # Author - eli, faro.gov
 # Contributors - marketsupreme
 
-options(repos = c(CRAN = "https://cran.rstudio.com"))
-required_packages <- trimws(readLines("./dependencies/packages.txt"))
-
-# Check each package and install if it's not already installed
-for (pkg in required_packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg)
-  }
-}
-
-#hello
-
 # Load required libraries
 library(nflfastR)
 library(dplyr)
@@ -110,6 +98,43 @@ normalize_variance <- function(variance, is_better_higher = FALSE) {
   }
 }
 
+# Calculate means and directional variances for offensive stats
+team_stats <- weekly_epa_stats %>%
+  group_by(posteam) %>%
+  summarize(
+    avg_points_per_play = mean(points_per_play, na.rm = TRUE),
+    points_per_play_variance = calculate_directional_variance(points_per_play, mean(points_per_play, na.rm = TRUE)),
+    avg_epa_pass = mean(epa_pass_per_play, na.rm = TRUE),
+    epa_pass_variance = calculate_directional_variance(epa_pass_per_play, mean(epa_pass_per_play, na.rm = TRUE)),
+    avg_epa_run = mean(epa_run_per_play, na.rm = TRUE),
+    epa_run_variance = calculate_directional_variance(epa_run_per_play, mean(epa_run_per_play, na.rm = TRUE)),
+    avg_success_rate = mean(success_rate, na.rm = TRUE),
+    success_rate_variance = calculate_directional_variance(success_rate, mean(success_rate, na.rm = TRUE)),
+    avg_yards_per_play = mean(yards_per_play, na.rm = TRUE),
+    yards_per_play_variance = calculate_directional_variance(yards_per_play, mean(yards_per_play, na.rm = TRUE)),
+    win_percentage = mean(win_percentage, na.rm = TRUE),
+    .groups = 'drop'
+  ) %>%
+  rename(team = posteam)
+
+  # Calculate means and directional variances for defensive stats
+def_team_stats <- weekly_def_epa_stats %>%
+  group_by(defteam) %>%
+  summarize(
+    avg_points_against_per_play = mean(points_against_per_play, na.rm = TRUE),
+    points_against_per_play_variance = calculate_directional_variance(points_against_per_play, mean(points_against_per_play, na.rm = TRUE)),
+    avg_epa_pass_against = mean(epa_pass_against_per_play, na.rm = TRUE),
+    epa_pass_against_variance = calculate_directional_variance(epa_pass_against_per_play, mean(epa_pass_against_per_play, na.rm = TRUE)),
+    avg_epa_run_against = mean(epa_run_against_per_play, na.rm = TRUE),
+    epa_run_against_variance = calculate_directional_variance(epa_run_against_per_play, mean(epa_run_against_per_play, na.rm = TRUE)),
+    avg_success_rate_against = mean(success_rate_against, na.rm = TRUE),
+    success_rate_against_variance = calculate_directional_variance(success_rate_against, mean(success_rate_against, na.rm = TRUE)),
+    avg_yards_against_per_play = mean(yards_against_per_play, na.rm = TRUE),
+    yards_against_per_play_variance = calculate_directional_variance(yards_against_per_play, mean(yards_against_per_play, na.rm = TRUE)),
+    .groups = 'drop'
+  ) %>%
+  rename(team = defteam)
+
 # Calculate combined variance score
 combined_variance_stats <- team_stats %>%
   left_join(def_team_stats, by = "team") %>%
@@ -130,43 +155,6 @@ combined_variance_stats <- team_stats %>%
     ) / 10  # Divide by number of components to get average
   ) %>%
   select(team, combined_variance_score)
-
-# Calculate means and directional variances for offensive stats
-team_stats <- weekly_epa_stats %>%
-  group_by(posteam) %>%
-  summarize(
-    avg_points_per_play = mean(points_per_play, na.rm = TRUE),
-    points_per_play_variance = calculate_directional_variance(points_per_play, mean(points_per_play, na.rm = TRUE)),
-    avg_epa_pass = mean(epa_pass_per_play, na.rm = TRUE),
-    epa_pass_variance = calculate_directional_variance(epa_pass_per_play, mean(epa_pass_per_play, na.rm = TRUE)),
-    avg_epa_run = mean(epa_run_per_play, na.rm = TRUE),
-    epa_run_variance = calculate_directional_variance(epa_run_per_play, mean(epa_run_per_play, na.rm = TRUE)),
-    avg_success_rate = mean(success_rate, na.rm = TRUE),
-    success_rate_variance = calculate_directional_variance(success_rate, mean(success_rate, na.rm = TRUE)),
-    avg_yards_per_play = mean(yards_per_play, na.rm = TRUE),
-    yards_per_play_variance = calculate_directional_variance(yards_per_play, mean(yards_per_play, na.rm = TRUE)),
-    win_percentage = mean(win_percentage, na.rm = TRUE),
-    .groups = 'drop'
-  ) %>%
-  rename(team = posteam)
-
-# Calculate means and directional variances for defensive stats
-def_team_stats <- weekly_def_epa_stats %>%
-  group_by(defteam) %>%
-  summarize(
-    avg_points_against_per_play = mean(points_against_per_play, na.rm = TRUE),
-    points_against_per_play_variance = calculate_directional_variance(points_against_per_play, mean(points_against_per_play, na.rm = TRUE)),
-    avg_epa_pass_against = mean(epa_pass_against_per_play, na.rm = TRUE),
-    epa_pass_against_variance = calculate_directional_variance(epa_pass_against_per_play, mean(epa_pass_against_per_play, na.rm = TRUE)),
-    avg_epa_run_against = mean(epa_run_against_per_play, na.rm = TRUE),
-    epa_run_against_variance = calculate_directional_variance(epa_run_against_per_play, mean(epa_run_against_per_play, na.rm = TRUE)),
-    avg_success_rate_against = mean(success_rate_against, na.rm = TRUE),
-    success_rate_against_variance = calculate_directional_variance(success_rate_against, mean(success_rate_against, na.rm = TRUE)),
-    avg_yards_against_per_play = mean(yards_against_per_play, na.rm = TRUE),
-    yards_against_per_play_variance = calculate_directional_variance(yards_against_per_play, mean(yards_against_per_play, na.rm = TRUE)),
-    .groups = 'drop'
-  ) %>%
-  rename(team = defteam)
 
 
 
@@ -299,16 +287,6 @@ create_nfl_scatterplot <- function(data, x_col_num, y_col_num, add_trendline = F
   print(plot)
 }
 
-# Update the graph function
-graph <- function(x_col_num, y_col_num, add_trendline = FALSE) {
-  create_nfl_scatterplot(final_stats, x_col_num, y_col_num, add_trendline)
-}
-
-# Display column names with indices
-for(i in seq_along(colnames(final_stats))) {
-  cat(i, ": ", colnames(final_stats)[i], "\n")
-}
-
 # Calculate adjusted stats
 final_stats <- final_stats %>%
   mutate(
@@ -341,42 +319,4 @@ result_table <- final_stats %>%
          combined_variance_score,
          everything())
 
-# Update the datatable function to include the new columns
-datatable(result_table,
-          colnames = c("Team", "Win %",
-                       "Avg Points per Play", "Points per Play Variance", "Adj Avg Points per Play",
-                       "Avg EPA Pass", "EPA Pass Variance", "Adj Avg EPA Pass",
-                       "Avg EPA Run", "EPA Run Variance", "Adj Avg EPA Run",
-                       "Avg Success Rate", "Success Rate Variance", "Adj Avg Success Rate",
-                       "Avg Yards per Play", "Yards per Play Variance", "Adj Avg Yards per Play",
-                       "Avg Points Against per Play", "Points Against per Play Variance", "Adj Avg Points Against per Play",
-                       "Avg EPA Pass Against", "EPA Pass Against Variance", "Adj Avg EPA Pass Against",
-                       "Avg EPA Run Against", "EPA Run Against Variance", "Adj Avg EPA Run Against",
-                       "Avg Success Rate Against", "Success Rate Against Variance", "Adj Avg Success Rate Against",
-                       "Avg Yards Against per Play", "Yards Against per Play Variance", "Adj Avg Yards Against per Play",
-                       "Combined Variance Score",
-                       "Team Name"),
-          options = list(
-            pageLength = 32,
-            order = list(list(2, 'desc')),  # Sort by Win % (now the 2nd column) in descending order
-            scrollX = TRUE,
-            dom = 'Bfrtip',
-            buttons = list('copy')
-          ),
-          extensions = 'Buttons',
-          rownames = FALSE) %>%
-  formatStyle(0, target = "row", lineHeight = '1.2')
-
-
-# Update the graph function to use result_table instead of final_stats
-graph <- function(x_col_num, y_col_num, add_trendline = FALSE) {
-  create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
-}
-
-# Display column names with indices, matching the order in result_table
-cat("\nAvailable Statistics for Plotting:\n")
-for(i in seq_along(colnames(result_table))) {
-  cat(sprintf("%2d: %s\n", i, colnames(result_table)[i]))
-}
-cat("\nTo create a plot, use: graph(x, y) where x and y are numbers from the list above\n")
-cat("To add a trend line, use: graph(x, y, add_trendline = TRUE)\n")
+write.csv(result_table, "./statstable.csv", row.names = FALSE)
