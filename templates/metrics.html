@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metrics</title>
+    <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet" />
+</head>
+
+<!-- Navigation bar -->
+{% include 'navbar.html' %}
+
+<body>
+    <form action="/graph" method="GET">
+        <label for="x_axis">Select X-Axis:</label>
+        <select id="x_axis" name="x_axis">
+            <option value="avg_points_against_per_play">"avg_points_against_per_play"</option>
+            <option value="avg_epa_pass_against">"avg_epa_pass_against"</option>
+            <option value="avg_epa_run_against">"avg_epa_run_against"</option>
+        </select>
+        
+        <label for="y_axis">Select Y-Axis:</label>
+        <select id="y_axis" name="y_axis">
+            <option value="avg_points_against_per_play">"avg_points_against_per_play"</option>
+            <option value="avg_epa_pass_against">"avg_epa_pass_against"</option>
+            <option value="avg_epa_run_against">"avg_epa_run_against"</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html>

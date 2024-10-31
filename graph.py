@@ -6,16 +6,6 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import numpy as np
 import argparse #remove this - debugging only
 
-#run R script
-def fetch_stats():
-    subprocess.run(["Rscript", "./fetchstats.R"], capture_output=False, text=True)
-
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-import numpy as np
-
 # Function to add team logo images to the plot
 def add_team_logos(ax, plot_data, logo_dict):
     for _, row in plot_data.iterrows():
@@ -28,10 +18,10 @@ def add_team_logos(ax, plot_data, logo_dict):
             ax.add_artist(ab)
 
 # Main function to create NFL scatter plot
-def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
+def create_nfl_scatterplot(data, x_col, y_col, add_trendline=False):
     col_names = data.columns
-    x_col = col_names[x_col_num]
-    y_col = col_names[y_col_num]
+    # x_col = col_names[x_col_num]
+    # y_col = col_names[y_col_num]
     
     # Lists of stats to determine axis inversion
     better_lower_stats = [
@@ -104,20 +94,15 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     plt.show()
 
 
-# Wrapper function to create the scatter plot
-def graph(x_col_num, y_col_num, add_trendline=False):
-    result_table = pd.read_csv('./statstable.csv')
-    create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
-
-if __name__ == "__main__":
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description="Generate an NFL scatterplot.")
-    parser.add_argument("x_col_num", type=int, help="Column number for x-axis")
-    parser.add_argument("y_col_num", type=int, help="Column number for y-axis")
-    parser.add_argument("--add_trendline", action="store_true", help="Add a trendline to the plot")
+# if __name__ == "__main__":
+#     # Set up argument parser
+#     parser = argparse.ArgumentParser(description="Generate an NFL scatterplot.")
+#     parser.add_argument("x_col_num", type=int, help="Column number for x-axis")
+#     parser.add_argument("y_col_num", type=int, help="Column number for y-axis")
+#     parser.add_argument("--add_trendline", action="store_true", help="Add a trendline to the plot")
     
-    # Parse arguments
-    args = parser.parse_args()
+#     # Parse arguments
+#     args = parser.parse_args()
 
-    # Call the graph function with arguments
-    graph(args.x_col_num, args.y_col_num, args.add_trendline)
+#     # Call the graph function with arguments
+#     graph(args.x_col_num, args.y_col_num, args.add_trendline)

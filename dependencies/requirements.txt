@@ -1,3 +1,6 @@
 pandas
 matplotlib
 seaborn
+flask
+waitress
+flask_sqlalchemy

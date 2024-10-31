@@ -1,0 +1,134 @@
+/* Define styles for the order status bar */
+.stage-bar-container {
+    text-align: center; /* Center its contents */
+}
+
+.stage-bar {
+    width: 60%; /* Adjust width as needed */
+    height: 40px;
+    background-color: #3A3F44;
+    border-radius: 5px;
+    overflow: hidden;
+    display: inline-block; /* Allows the stage-bar to respect the centering of its parent */
+    margin-bottom: 100px;
+}
+
+.stage-fill {
+    height: 100%;
+    background-color: #009688; /* Green color for filled portion */
+    transition: width 1s ease-in-out; /* Smooth transition for width change */
+    animation: progressAnimation 3s alternate; /* Animation for the progress */
+}
+
+#progress-text{
+    position: absolute; /* Keep the text positioned within the parent */
+    top: 50%; /* Center the text vertically */
+    left: 50%; /* Center the text horizontally */
+    transform: translate(-50%, -50%); /* Align the text in the center */
+    font-weight: bold; /* Make the text bolder */
+    color: #fff; /* Set the text color to white for better contrast */
+    font-size: 14px; /* Adjust the text size as needed */
+}
+
+#welcome_banner {
+    text-align: center;
+    margin-top: 50px; /* Add top margin to create space above the heading */
+    margin-bottom: 60px; /* Add bottom margin to create space below the heading */
+}
+
+#success_message {
+    text-align: center;
+    margin-top: 15px; /* Add top margin to create space above the heading */
+    margin-bottom: 15px; /* Add bottom margin to create space below the heading */
+}
+
+/* Style the navigation bar
+.navbar {
+    overflow: hidden;
+    background-color: #001829;
+} */
+
+
+/***************Navbar************* */
+.navbar a {
+    /* display: flex; */
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+    top: 0;
+    width: 80%;
+    padding: 20px;
+    background-color: #333;
+}
+/* 
+Change the color of links on hover
+.navbar a:hover {
+    background-color: #D2B4DE;
+    color: black;
+    transform: scale(1.1); 
+} */
+
+/* .logo-image {
+    overflow: hidden;
+} */
+
+/* Initial submit button styles */
+form button {
+    padding: 10px 20px;
+    background-color: #9575CD; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 2px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Smooth transformation */
+    font-family: 'Oswald', sans-serif;;
+}
+
+/* Submit button hover effect */
+form button:hover {
+    transform: scale(1.1); /* Scale the button to 110% of its original size */
+}
+
+form {
+    display: flex; /* Use flexbox layout */
+    gap: 10px; /* Add space between input and button */
+    justify-content: center;
+    align-items: cen;
+}
+
+/* Styles for the input field */
+form input[type="text"] {
+    padding: 10px 20px; /* Match padding with button */
+    width: 30%; /* Set width to take up remaining space */
+    box-sizing: border-box; /* Ensure padding is included in width */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add border radius to match button */
+    font-size: 16px; /* Match font size with button */
+    outline: none; /* Remove focus outline */
+}
+
+body {
+    background-color: #3A3F44; /* Replace #f0f0f0 with your desired background color */
+    font-family: Lato;
+}
+
+h1 {
+    color: #C4C7C9; /* Replace #f0f0f0 with your desired background color */
+}
+
+h2 {
+    color: #C4C7C9; /* Replace #f0f0f0 with your desired background color */
+}
+
+h3 {
+    color: #C4C7C9; /* Replace #f0f0f0 with your desired background color */
+}
+
+h4 {
+    color: #C4C7C9; /* Replace #f0f0f0 with your desired background color */
+}
