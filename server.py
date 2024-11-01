@@ -35,7 +35,8 @@ def metrics():
     result_table = setResultTable()
     column_names = result_table.columns.tolist()
     filtered_columns = [col for i, col in enumerate(column_names) if i not in (0, 33)]  # Exclude index 0 and 32
-    return render_template('metrics.html', columns = filtered_columns)
+    columns_with_indices = list(enumerate(filtered_columns, start=1))
+    return render_template('metrics.html', columns = columns_with_indices)
 
 @app.route('/graph', methods=['GET'])
 def graph():
@@ -44,8 +45,9 @@ def graph():
     filtered_columns = [col for i, col in enumerate(column_names) if i not in (0, 33)]  # Exclude index 0 and 32
     x_axis = request.args.get('x_axis')
     y_axis = request.args.get('y_axis')
+    columns_with_indices = list(enumerate(filtered_columns, start=1))
     plot = graph_function(result_table, int(x_axis), int(y_axis))
-    return render_template('graph.html', plot=plot, columns=filtered_columns)
+    return render_template('graph.html', plot=plot, columns=columns_with_indices)
 
 @app.route('/run-script', methods=['POST'])
 def run_script_route():

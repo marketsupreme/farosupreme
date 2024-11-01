@@ -14,21 +14,93 @@
 <body>
     <form action="/graph" method="GET">
         <label for="x_axis">Select X-Axis:</label>
-        <select id="x_axis" name="x_axis">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+        <select id="x_axis" name="x_axis" onchange="updateDropdowns()">
+            {% for i, column in columns %}
+                <option value="{{ i }}">{{ column }}</option>
+            {% endfor %}
         </select>
         
         <label for="y_axis">Select Y-Axis:</label>
-        <select id="y_axis" name="y_axis">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+        <select id="y_axis" name="y_axis" onchange="updateDropdowns()">
+            {% for i, column in columns %}
+                <option value="{{ i }}">{{ column }}</option>
+            {% endfor %}
         </select>
 
-        <button type="submit">Submit</button>
+        <button type="submit">Graph</button>
     </form>
+    <script>
+        function updateDropdowns() {
+            const xSelect = document.getElementById('x_axis');
+            const ySelect = document.getElementById('y_axis');
+            const xSelectedValue = xSelect.value;
+            const ySelectedValue = ySelect.value;
+
+            // Enable all options initially
+            for (let option of xSelect.options) {
+                option.disabled = false;
+            }
+            for (let option of ySelect.options) {
+                option.disabled = false;
+            }
+
+            // Disable the selected option in the opposite dropdown
+            if (xSelectedValue) {
+                for (let option of ySelect.options) {
+                    if (option.value === xSelectedValue) {
+                        option.disabled = true;
+                    }
+                }
+            }
+
+            if (ySelectedValue) {
+                for (let option of xSelect.options) {
+                    if (option.value === ySelectedValue) {
+                        option.disabled = true;
+                    }
+                }
+            }
+        }
+
+        // Initial call to set the correct disabled options on page load
+        updateDropdowns();
+    </script><script>
+        function updateDropdowns() {
+            const xSelect = document.getElementById('x_axis');
+            const ySelect = document.getElementById('y_axis');
+            const xSelectedValue = xSelect.value;
+            const ySelectedValue = ySelect.value;
+
+            // Enable all options initially
+            for (let option of xSelect.options) {
+                option.disabled = false;
+            }
+            for (let option of ySelect.options) {
+                option.disabled = false;
+            }
+
+            // Disable the selected option in the opposite dropdown
+            if (xSelectedValue) {
+                for (let option of ySelect.options) {
+                    if (option.value === xSelectedValue) {
+                        option.disabled = true;
+                    }
+                }
+            }
+
+            if (ySelectedValue) {
+                for (let option of xSelect.options) {
+                    if (option.value === ySelectedValue) {
+                        option.disabled = true;
+                    }
+                }
+            }
+        }
+
+        // Initial call to set the correct disabled options on page load
+        updateDropdowns();
+    </script>
+
 </body>
 
 </html>
