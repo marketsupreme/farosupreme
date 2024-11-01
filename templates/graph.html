@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metrics</title>
     <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet" />
+    <style>
+        /* Add this CSS to center the graph and make it responsive */
+        body {
+            
+            
+        }
+
+        form {
+            margin-bottom: 20px; /* Space between the form and the graph */
+        }
+
+        
+    </style>
 </head>
 
 <!-- Navigation bar -->
@@ -15,20 +28,24 @@
     <form action="/graph" method="GET">
         <label for="x_axis">Select X-Axis:</label>
         <select id="x_axis" name="x_axis">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
         </select>
         
         <label for="y_axis">Select Y-Axis:</label>
         <select id="y_axis" name="y_axis">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
         </select>
 
         <button type="submit">Submit</button>
     </form>
+
+    <div class="plot-container">
+        {{ plot | safe }}
+    </div>
 </body>
 
 </html>

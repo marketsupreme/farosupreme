@@ -4,3 +4,4 @@ seaborn
 flask
 waitress
 flask_sqlalchemy
+plotly

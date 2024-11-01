@@ -2,7 +2,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from PIL import Image
-import plotly.io as pio  # For converting plot to HTML
 
 # Main function to create NFL scatter plot using Plotly
 def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
@@ -25,10 +24,10 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     plot_data = data[[x_col, y_col, 'team', 'team_name']].dropna().copy()
     plot_data['x'] = plot_data[x_col].astype(float)
     plot_data['y'] = plot_data[y_col].astype(float)
-        
+    
     # Calculate correlation
     correlation = plot_data['x'].corr(plot_data['y'])
-    
+        
     # Generate image URLs for each team
     plot_data['image_path'] = '../NFLstats/static/images/logos/' + plot_data['team'] + '.tif'
     
@@ -47,9 +46,7 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
         hover_name='team_name',
         title=f"{x_col.replace('_', ' ').title()} vs {y_col.replace('_', ' ').title()}<br>Correlation: {correlation:.2f}",
         labels={'x': x_col.replace("_", " ").title(), 'y': y_col.replace("_", " ").title()},
-        trendline="ols" if add_trendline else None,  # Add trendline if specified
-        width=800,  # Set width
-        height=800  # Set height to the same value to make it square
+        trendline="ols" if add_trendline else None  # Add trendline if specified
     )
 
     # Add images as custom markers
@@ -87,18 +84,16 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     fig.update_xaxes(range=[x_center - x_range, x_center + x_range] if x_invert else [x_center - x_range, x_center + x_range])
     fig.update_yaxes(range=[y_center - y_range, y_center + y_range] if y_invert else [y_center - y_range, y_center + y_range])
     
-    # Convert the figure to HTML
-    plot_html = pio.to_html(fig, full_html=False)
-    return plot_html
+    # Show the figure
+    fig.show()
 
-# Example usage (uncomment to run):
-# result_table = pd.read_csv("./statstable.csv")
-# plot_html = create_nfl_scatterplot(result_table, 1, 2, False)
+# Load data and run the function
+result_table = pd.read_csv("./statstable.csv")
+create_nfl_scatterplot(result_table, 1, 2, False)
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from PIL import Image
-import plotly.io as pio  # For converting plot to HTML
 
 # Main function to create NFL scatter plot using Plotly
 def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
@@ -121,10 +116,10 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     plot_data = data[[x_col, y_col, 'team', 'team_name']].dropna().copy()
     plot_data['x'] = plot_data[x_col].astype(float)
     plot_data['y'] = plot_data[y_col].astype(float)
-        
+    
     # Calculate correlation
     correlation = plot_data['x'].corr(plot_data['y'])
-    
+        
     # Generate image URLs for each team
     plot_data['image_path'] = '../NFLstats/static/images/logos/' + plot_data['team'] + '.tif'
     
@@ -143,9 +138,7 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
         hover_name='team_name',
         title=f"{x_col.replace('_', ' ').title()} vs {y_col.replace('_', ' ').title()}<br>Correlation: {correlation:.2f}",
         labels={'x': x_col.replace("_", " ").title(), 'y': y_col.replace("_", " ").title()},
-        trendline="ols" if add_trendline else None,  # Add trendline if specified
-        width=800,  # Set width
-        height=800  # Set height to the same value to make it square
+        trendline="ols" if add_trendline else None  # Add trendline if specified
     )
 
     # Add images as custom markers
@@ -183,10 +176,9 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     fig.update_xaxes(range=[x_center - x_range, x_center + x_range] if x_invert else [x_center - x_range, x_center + x_range])
     fig.update_yaxes(range=[y_center - y_range, y_center + y_range] if y_invert else [y_center - y_range, y_center + y_range])
     
-    # Convert the figure to HTML
-    plot_html = pio.to_html(fig, full_html=False)
-    return plot_html
+    # Show the figure
+    fig.show()
 
-# Example usage (uncomment to run):
-# result_table = pd.read_csv("./statstable.csv")
-# plot_html = create_nfl_scatterplot(result_table, 1, 2, False)
+# Load data and run the function
+result_table = pd.read_csv("./statstable.csv")
+create_nfl_scatterplot(result_table, 1, 2, False)

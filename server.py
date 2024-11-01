@@ -18,10 +18,11 @@ def graph_function(x_col_num, y_col_num, add_trendline=False):
     if not os.path.isfile("./statstable.csv"):
         subprocess.run(["Rscript", "./fetchstats.R"], capture_output=False, text=True)
         result_table = pd.read_csv("./statstable.csv")
-        create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+        plot = create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
     else:
         result_table = pd.read_csv("./statstable.csv")
-        create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+        plot = create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+    return plot
 
 @app.route('/')
 @app.route('/index')
@@ -37,9 +38,8 @@ def metrics():
 def graph():
     x_axis = request.args.get('x_axis')
     y_axis = request.args.get('y_axis')
-    graph_function(x_axis, y_axis)
-    # Process the selections as needed
-    return f"X-Axis: {x_axis}, Y-Axis: {y_axis}"
+    plot = graph_function(int(x_axis), int(y_axis))
+    return render_template('graph.html', plot=plot)
 
 @app.route('/run-script', methods=['POST'])
 def run_script_route():

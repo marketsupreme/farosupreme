@@ -1,0 +1,33 @@
+win_percentage,avg_points_per_play,team,team_name,x,y
+0.5,0.296,ARI,Arizona Cardinals,0.5,0.296
+0.625,0.297,ATL,Atlanta Falcons,0.625,0.297
+0.625,0.365,BAL,Baltimore Ravens,0.625,0.365
+0.75,0.36,BUF,Buffalo Bills,0.75,0.36
+0.125,0.198,CAR,Carolina Panthers,0.125,0.198
+0.571,0.255,CHI,Chicago Bears,0.571,0.255
+0.375,0.32,CIN,Cincinnati Bengals,0.375,0.32
+0.25,0.187,CLE,Cleveland Browns,0.25,0.187
+0.429,0.241,DAL,Dallas Cowboys,0.429,0.241
+0.625,0.238,DEN,Denver Broncos,0.625,0.238
+0.857,0.443,DET,Detroit Lions,0.857,0.443
+0.75,0.317,GB,Green Bay Packers,0.75,0.317
+0.75,0.27,HOU,Houston Texans,0.75,0.27
+0.5,0.281,IND,Indianapolis Colts,0.5,0.281
+0.25,0.275,JAX,Jacksonville Jaguars,0.25,0.275
+1.0,0.289,KC,Kansas City Chiefs,1.0,0.289
+0.429,0.23,LA,Los Angeles Rams,0.429,0.23
+0.571,0.238,LAC,Los Angeles Chargers,0.571,0.238
+0.25,0.252,LV,Las Vegas Raiders,0.25,0.252
+0.286,0.183,MIA,Miami Dolphins,0.286,0.183
+0.714,0.321,MIN,Minnesota Vikings,0.714,0.321
+0.25,0.207,NE,New England Patriots,0.25,0.207
+0.25,0.301,NO,New Orleans Saints,0.25,0.301
+0.25,0.19,NYG,New York Giants,0.25,0.19
+0.25,0.247,NYJ,New York Jets,0.25,0.247
+0.714,0.303,PHI,Philadelphia Eagles,0.714,0.303
+0.75,0.272,PIT,Pittsburgh Steelers,0.75,0.272
+0.5,0.272,SEA,Seattle Seahawks,0.5,0.272
+0.5,0.3,SF,San Francisco 49ers,0.5,0.3
+0.5,0.344,TB,Tampa Bay Buccaneers,0.5,0.344
+0.143,0.246,TEN,Tennessee Titans,0.143,0.246
+0.75,0.351,WAS,Washington Commanders,0.75,0.351
