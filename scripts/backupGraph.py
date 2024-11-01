@@ -88,9 +88,10 @@ def create_nfl_scatterplot(data, x_col_num, y_col_num, add_trendline=False):
     fig.update_xaxes(range=[x_center - x_range, x_center + x_range] if x_invert else [x_center - x_range, x_center + x_range])
     fig.update_yaxes(range=[y_center - y_range, y_center + y_range] if y_invert else [y_center - y_range, y_center + y_range])
     
+    fig.show()
     # Convert the figure to HTML
     plot_html = pio.to_html(fig, full_html=False)
     return plot_html
 
-# result_table = pd.read_csv("./statstable.csv")
-# plot_html = create_nfl_scatterplot(result_table, 1, 2, False)
+result_table = pd.read_csv("./statstable.csv")
+plot_html = create_nfl_scatterplot(result_table, 1, 2, False)

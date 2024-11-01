@@ -7,17 +7,9 @@
     <title>Metrics</title>
     <link href="{{ url_for('static', filename='styles/style.css')}}" rel="stylesheet" />
     <style>
-        /* Add this CSS to center the graph and make it responsive */
-        body {
-            
-            
-        }
-
         form {
             margin-bottom: 20px; /* Space between the form and the graph */
         }
-
-        
     </style>
 </head>
 
@@ -28,16 +20,16 @@
     <form action="/graph" method="GET">
         <label for="x_axis">Select X-Axis:</label>
         <select id="x_axis" name="x_axis">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
         </select>
         
         <label for="y_axis">Select Y-Axis:</label>
         <select id="y_axis" name="y_axis">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
         </select>
 
         <button type="submit">Submit</button>

@@ -13,33 +13,39 @@ app = Flask(__name__)
 
 app.app_context().push()
 
-# Wrapper function to create the scatter plot
-def graph_function(x_col_num, y_col_num, add_trendline=False):
+def setResultTable():
     if not os.path.isfile("./statstable.csv"):
         subprocess.run(["Rscript", "./fetchstats.R"], capture_output=False, text=True)
-        result_table = pd.read_csv("./statstable.csv")
-        plot = create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+        return pd.read_csv("./statstable.csv")
     else:
-        result_table = pd.read_csv("./statstable.csv")
-        plot = create_nfl_scatterplot(result_table, x_col_num, y_col_num, add_trendline)
+        return pd.read_csv("./statstable.csv")
+        
+def graph_function(result_table, x_col_num, y_col_num, add_trendline=False):
+    plot = create_nfl_scatterplot(result_table, x_col_num, y_col_num)
     return plot
 
 @app.route('/')
 @app.route('/index')
 def index():
+    setResultTable()
     return render_template('index.html')
 
 @app.route('/metrics')
 def metrics():
-    # Process the selections as needed
-    return render_template('metrics.html')
+    result_table = setResultTable()
+    column_names = result_table.columns.tolist()
+    filtered_columns = [col for i, col in enumerate(column_names) if i not in (0, 33)]  # Exclude index 0 and 32
+    return render_template('metrics.html', columns = filtered_columns)
 
 @app.route('/graph', methods=['GET'])
 def graph():
+    result_table = setResultTable()
+    column_names = result_table.columns.tolist()
+    filtered_columns = [col for i, col in enumerate(column_names) if i not in (0, 33)]  # Exclude index 0 and 32
     x_axis = request.args.get('x_axis')
     y_axis = request.args.get('y_axis')
-    plot = graph_function(int(x_axis), int(y_axis))
-    return render_template('graph.html', plot=plot)
+    plot = graph_function(result_table, int(x_axis), int(y_axis))
+    return render_template('graph.html', plot=plot, columns=filtered_columns)
 
 @app.route('/run-script', methods=['POST'])
 def run_script_route():
