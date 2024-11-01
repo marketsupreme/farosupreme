@@ -5,9 +5,48 @@
     max-width: 800px; /* Max width to prevent over-expansion */
     height: 80%; /* Responsive height */
     max-height: 800px; /* Max height to prevent over-expansion */
-    
-    justify-content: center;
     align-items: center;
+}
+
+.dropdown_block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.dropdown_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.dropdown_graph_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between Y-Axis dropdown and Graph button */
+}
+
+label {
+    padding-bottom: 5px;
+    color: #C4C7C9;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.dropdowns {
+    width: 200px;
+    text-align: center;
+    padding: 5px;
+}
+
+.graph_button {
+    padding: 8px 15px;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
 /* Ensure the plot resizes */
@@ -50,17 +89,13 @@
     padding: 20px;
     background-color: #333;
 }
-/* 
+
 Change the color of links on hover
 .navbar a:hover {
     background-color: #D2B4DE;
     color: black;
     transform: scale(1.1); 
-} */
-
-/* .logo-image {
-    overflow: hidden;
-} */
+}
 
 /* Initial submit button styles */
 form button {

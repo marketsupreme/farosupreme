@@ -3,6 +3,35 @@
         <!--<img id="logo" src="/static/styles/images/08c7375f-6132-4140-8692-af30fabde7a7.webp" class="img-fluid">-->
     </a>
     <a href="metrics">Metrics</a>
-    <a href="refresh">Refresh Data</a>
+    <a href="#" id="refresh-data-button">Refresh Data</a>
     <a href="forecasts">Forecasts</a>
 </div>
+
+<script>
+    document.getElementById('refresh-data-button').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default link behavior
+        
+        const button = event.target; // Reference to the button
+        button.textContent = "Refreshing..."; // Change button text to "Refreshing..."
+
+        // Send an AJAX POST request to the server to trigger the script
+        fetch("{{ url_for('run_script_route') }}", {
+            method: "POST",
+        })
+        .then(response => {
+            if (response.ok) {
+                // Change the button text to "Done!" after successful completion
+                button.textContent = "Done!";
+                // Revert the text back to "Refresh Data" after a delay
+                setTimeout(() => {
+                    button.textContent = "Refresh Data";
+                }, 2000); // Adjust delay as needed
+            } else {
+                console.error("Failed to refresh data");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+</script>

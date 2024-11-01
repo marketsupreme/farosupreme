@@ -52,7 +52,7 @@ def graph():
 @app.route('/run-script', methods=['POST'])
 def run_script_route():
     subprocess.run(["Rscript", "./fetchstats.R"], capture_output=False, text=True)
-    return render_template('refresh.html')
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

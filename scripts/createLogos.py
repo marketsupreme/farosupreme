@@ -1,10 +1,8 @@
 import nfl_data_py as nfl
 import pandas as pd
-import numpy as np
 import os
 import urllib.request
-import matplotlib.pyplot as plt
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+
 
 logos = nfl.import_team_desc()
 logos = logos[['team_abbr', 'team_logo_espn']]
